@@ -1,0 +1,57 @@
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Mock data for demonstration purposes
+doctors = [
+    {"id": 1, "name": "Dr. Smith", "specialization": "Cardiology"},
+    {"id": 2, "name": "Dr. Jones", "specialization": "Dermatology"}
+]
+
+appointments = []
+
+@app.route('/doctors', methods=['GET'])
+def get_doctors():
+    """
+    Endpoint to list all doctors.
+    """
+    return jsonify(doctors)
+
+@app.route('/doctors/<int:doctor_id>', methods=['GET'])
+def get_doctor_detail(doctor_id):
+    """
+    Endpoint to get details of a specific doctor.
+    """
+    doctor = next((doc for doc in doctors if doc['id'] == doctor_id), None)
+    return jsonify(doctor) if doctor else ('', 404)
+
+@app.route('/doctors/<int:doctor_id>/availability', methods=['GET'])
+def get_doctor_availability(doctor_id):
+    """
+    Endpoint to check a doctor's availability.
+    """
+    # Logic to determine availability based on appointments and working hours
+    # For simplicity, assume all doctors are available in the evenings
+    # and not available on Sundays.
+    return jsonify({"available": True})
+
+@app.route('/appointments', methods=['POST'])
+def book_appointment():
+    """
+    Endpoint to book an appointment.
+    """
+    data = request.json
+    # Logic to book an appointment if the doctor is available
+    # and the maximum number of patients for the evening has not been reached.
+    appointments.append(data)
+    return jsonify(data), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+#This Python code uses Flask, a micro web framework, to define the API endpoints. The /doctors endpoint lists all doctors, /doctors/<int:doctor_id> retrieves details for a specific doctor, /doctors/<int:doctor_id>/availability checks if the doctor is available, and /appointments allows a patient to book an appointment.
+
+
+
+
